@@ -1,5 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from app.infrastructure.db.models.user_model import Base
+# from app.infrastructure.db.models.vehicle_model import Base
 from dotenv import load_dotenv
 import os
 load_dotenv()

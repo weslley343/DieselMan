@@ -13,8 +13,15 @@ router = APIRouter(prefix="/users", tags=["Users"])
 async def create_user(data: UserCreate, session: AsyncSession = Depends(get_session)):
     repo = UserRepository(session)
     use_case = UserUseCases(repo)
-    user = await use_case.create_user(username=data.username, email=data.email, password=data.password)
-    return user
+    try:
+        user = await use_case.create_user(
+            username=data.username,
+            email=data.email,
+            password=data.password
+        )
+        return user
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @router.get("/", response_model=list[UserRead])
 async def list_users(session: AsyncSession = Depends(get_session)):
@@ -50,3 +57,4 @@ async def update_user(
         return await use_case.update_user(user_id, user_data)
     except ValueError as e:
         raise HTTPException(status_code=404, detail=str(e))
+

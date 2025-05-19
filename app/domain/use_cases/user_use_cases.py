@@ -2,14 +2,13 @@ import uuid
 from app.application.schemas.user_schema import UserUpdate
 from app.domain.entities.user import User
 from app.domain.interfaces.user_repository_interface import IUserRepository
-
 class UserUseCases:
     def __init__(self, repository: IUserRepository):
         self.repository = repository
 
     async def create_user(self, username: str, email: str, password: str) -> User:
         # Aqui poderia ter validação de negócio, como verificar email duplicado etc.
-        new_user = User(id=None, username=username, email=email, password=password)
+        new_user = User(id=None, username=username, email=email, password=password, created_at=None, last_updated=None)
         created_user = await self.repository.create(new_user)
         return created_user
 

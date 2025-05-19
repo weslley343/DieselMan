@@ -1,8 +1,11 @@
+import datetime
 import uuid
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, delete
+from sqlalchemy.exc import IntegrityError
 from app.domain.entities.user import User
 from app.domain.interfaces.user_repository_interface import IUserRepository
+
 from app.infrastructure.db.models.user_model import UserModel
 
 class UserRepository(IUserRepository):
@@ -10,16 +13,42 @@ class UserRepository(IUserRepository):
         self.session = session
 
     async def create(self, user: User) -> User:
-        db_user = UserModel(username=user.username, email=user.email, password=user.password)
-        self.session.add(db_user)
-        await self.session.commit()
-        await self.session.refresh(db_user)
-        return User(id=db_user.id, username=db_user.username, email=db_user.email, password=db_user.password)
+        # Verifica se o e-mail já existe
+        existing_user = await self.session.execute(
+            select(UserModel).where(UserModel.email == user.email)
+        )
+        if existing_user.scalar_one_or_none():
+            raise ValueError("Usuário com este e-mail já existe.")
+
+        now = datetime.datetime.now()
+        db_user = UserModel(
+            username=user.username,
+            email=user.email,
+            password=user.password,
+            created_at=now,
+            last_updated=now
+        )
+        try:
+            self.session.add(db_user)
+            await self.session.commit()
+            await self.session.refresh(db_user)
+        except IntegrityError:
+            await self.session.rollback()
+            raise ValueError("Erro ao criar usuário. Verifique os dados enviados.")
+
+        return User(
+            id=db_user.id,
+            username=db_user.username,
+            email=db_user.email,
+            password=db_user.password,
+            created_at=db_user.created_at,
+            last_updated=db_user.last_updated
+        )
 
     async def list(self) -> list[User]:
         result = await self.session.execute(select(UserModel))
         users = result.scalars().all()
-        return [User(id=u.id, username=u.username, email=u.email, password=u.password) for u in users]
+        return [User(id=u.id, username=u.username, email=u.email, password=u.password, last_updated=u.last_updated, created_at=u.created_at) for u in users]
 
     async def get_by_id(self, user_id: int) -> User | None:
         result = await self.session.execute(select(UserModel).where(UserModel.id == user_id))

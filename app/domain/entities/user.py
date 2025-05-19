@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 import uuid
-from app.domain.entities.scene import Scene
+from datetime import datetime
+from app.domain.entities.vehicle import Vehicle
 from typing import List
 
 @dataclass
@@ -9,5 +10,7 @@ class User:
     username: str
     email: str
     password: str
-    scenes: List[Scene] = field(default_factory=list)
+    created_at: datetime | None
+    last_updated: datetime | None
+    vehicles: List[Vehicle] = field(default_factory=list)
 
