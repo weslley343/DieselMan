@@ -21,7 +21,7 @@ atualiza as migracoes
 
 inicia a aplicacao
 
-``` fast api dev main.py ```
+``` fastapi dev main.py ```
 
 para o banco de dados
 

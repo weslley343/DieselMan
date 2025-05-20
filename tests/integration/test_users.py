@@ -57,18 +57,24 @@ async def test_create_user():
         assert data["username"] == "weslley"
         assert data["email"] == "weslley2@example.com"
 
+
 @pytest.mark.anyio
-async def test_create_user():
+async def test_create_user_redundant():
     transport = ASGITransport(app=app)
     async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
+        # Cria o usuário inicialmente
+        await client.post("/users/", json={
+            "username": "weslley",
+            "email": "weslley2@example.com",
+            "password": "123456"
+        })
+
+        # Tenta criar novamente
         response = await client.post("/users/", json={
             "username": "weslley",
             "email": "weslley2@example.com",
             "password": "123456"
         })
-        print("Response JSON:", response.json())
 
-        assert response.status_code == 201
-        data = response.json()
-        assert data["username"] == "weslley"
-        assert data["email"] == "weslley2@example.com"
+        print("Response JSON:", response.json())
+        assert response.status_code == 400
