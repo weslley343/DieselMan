@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:latest
-    container_name: production
+    container_name: dieselman_postgres
     ports:
       - "5432:5432"
     environment:
@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: its3437not4you
       POSTGRES_DB: top
     volumes:
-      - pg_data_production:/var/lib/postgresql/data
+      - dieselman:/var/lib/postgresql/data
 
 volumes:
-  pg_data_production:
+  dieselman:

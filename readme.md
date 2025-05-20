@@ -15,6 +15,10 @@ ativa banco de dados
 
 ``` docker compose -f compose/postgres/docker-compose.yml up -d ```
 
+atualiza as migracoes
+```alembic upgrade head```
+
+
 inicia a aplicacao
 
 ``` fast api dev main.py ```
