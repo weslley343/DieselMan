@@ -18,8 +18,8 @@ class VehicleUseCases:
         )
         return await self.repository.create(vehicle)
 
-    # async def list_scenes(self, user_id: uuid.UUID) -> List[Vehicle]:
-    #     return await self.repository.list(user_id)
+    async def list_vehicles(self, user_id: uuid.UUID) -> List[Vehicle]:
+        return await self.repository.list(user_id)
 
     # async def get_by_id(self, scene_id: uuid.UUID) -> Vehicle | None:
     #     return await self.repository.get_by_id(scene_id)

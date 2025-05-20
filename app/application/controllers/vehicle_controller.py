@@ -7,10 +7,10 @@ from app.application.schemas.vehicle_schema import VehicleRead, VehicleCreate
 from app.domain.use_cases.vehicle_use_cases import VehicleUseCases
 from app.infrastructure.repositories.vehicle_repository import VehicleRepository
 
-router = APIRouter(prefix="/vehicles", tags=["Vehicle"])
+router = APIRouter(prefix="/vehicles", tags=["Vehicles"])
 
 @router.post("/", response_model=VehicleRead, status_code=201)
-async def create_user(data: VehicleCreate, session: AsyncSession = Depends(get_session)):
+async def create_vehicle(data: VehicleCreate, session: AsyncSession = Depends(get_session)):
     repo = VehicleRepository(session)
     use_case = VehicleUseCases(repo)
     try:
@@ -19,11 +19,12 @@ async def create_user(data: VehicleCreate, session: AsyncSession = Depends(get_s
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-# @router.get("/", response_model=list[UserRead])
-# async def list_users(session: AsyncSession = Depends(get_session)):
-#     repo = UserRepository(session)
-#     use_case = UserUseCases(repo)
-#     return await use_case.list_users()
+@router.get("/{user_id}", response_model=list[VehicleRead])
+async def list_vehicles(user_id: uuid.UUID, session: AsyncSession = Depends(get_session)):
+    repo = VehicleRepository(session)
+    use_case = VehicleUseCases(repo)
+    vehicles = await use_case.list_vehicles(user_id=user_id)
+    return vehicles
 
 # @router.get("/{user_id}", response_model=UserRead)
 # async def get_user(user_id: uuid.UUID, session: AsyncSession = Depends(get_session)):

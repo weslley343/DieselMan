@@ -1,3 +1,4 @@
+import datetime
 from fastapi import Form
 from typing import Optional
 import uuid
@@ -25,13 +26,16 @@ class VehicleRead(BaseModel):
     model: str
     brand: str
     identifier: str
+    created_at: datetime.datetime
+    last_updated: datetime.datetime
 
     # class Config:
     #     from_attributes = True
     model_config = ConfigDict(from_attributes=True)
 
 class VehicleUpdate(BaseModel):
-    title: Optional[str] = None
-    content: Optional[str] = None
-    url: Optional[str] = None
+    user_id: Optional[uuid.UUID] = None
+    model: Optional[str] = None
+    brand: Optional[str] = None
+    identifier: Optional[str] = None
     

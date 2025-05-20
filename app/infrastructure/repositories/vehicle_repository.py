@@ -49,9 +49,11 @@ class VehicleRepository(IVehicleRepository):
             Vehicle(
                 id=v.id,
                 user_id=v.user_id,
-                name=v.name,
+                model=v.model,
                 brand=v.brand,
-                identifier=v.identifier
+                identifier=v.identifier,
+                created_at=v.created_at,
+                last_updated=v.last_updated
             ) for v in vehicles
         ]
 
